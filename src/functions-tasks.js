@@ -199,8 +199,20 @@ function retry(func, attempts) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  if (typeof func !== 'function' || typeof logFunc !== 'function')
+    throw new TypeError('Both func and logFunc must be functions');
+
+  return (...args) => {
+    const formattedArgs = args.map((arg) => JSON.stringify(arg)).join(',');
+    const signature = `${func.name}(${formattedArgs})`;
+
+    logFunc(`${signature} starts`);
+    const result = func(...args);
+    logFunc(`${signature} ends`);
+
+    return result;
+  };
 }
 
 /**
