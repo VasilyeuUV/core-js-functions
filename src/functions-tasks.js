@@ -156,8 +156,24 @@ function memoize(func) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  if (typeof func !== 'function')
+    throw new TypeError('First argument must be a function');
+
+  if (!isNumber(attempts) || attempts < 1)
+    throw new RangeError('Attemts must be a valid positive number');
+
+  return (...args) => {
+    let lastError;
+    for (let i = 0; i < attempts; i += 1) {
+      try {
+        return func(...args);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  };
 }
 
 /**
