@@ -253,8 +253,17 @@ function partialUsingArguments(fn, ...args) {
  *   getId4() => 7
  *   getId10() => 11
  */
-function getIdGeneratorFunction(/* startFrom */) {
-  throw new Error('Not implemented');
+function getIdGeneratorFunction(startFrom) {
+  if (!isNumber(startFrom) || !Number.isInteger(startFrom))
+    throw new TypeError('startFrom must be a valid integer');
+
+  let currentId = startFrom;
+
+  return () => {
+    const id = currentId;
+    currentId += 1;
+    return id;
+  };
 }
 
 module.exports = {
