@@ -9,6 +9,16 @@
  ********************************************************************************************* */
 
 /**
+ * Checks whether the provided value is a valid number (not NaN).
+ *
+ * @param {*} n - The value to check.
+ * @return {boolean} - Returns true if n is a valid number, otherwise false.
+ */
+function isNumber(n) {
+  return typeof n === 'number' && !Number.isNaN(n);
+}
+
+/**
  * Returns the name of the current function.
  *
  * @return {string} - The name of the current function.
@@ -71,7 +81,7 @@ function getArgumentsCount(funcs) {
  *
  */
 function getPowerFunction(exponent) {
-  if (typeof exponent !== 'number' || Number.isNaN(exponent))
+  if (!isNumber(exponent))
     throw new TypeError('Exponent must be a valid number');
   return (x) => x ** exponent;
 }
@@ -89,8 +99,16 @@ function getPowerFunction(exponent) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom(/* ...coefficients */) {
-  throw new Error('Not implemented');
+function getPolynom(...coefficients) {
+  if (coefficients.length === 0) return null;
+
+  if (!coefficients.every(isNumber))
+    throw new TypeError('All coefficients must be valid numbers');
+
+  return (x) => {
+    if (!isNumber(x)) throw new TypeError('Argument must be a valid number');
+    return coefficients.reduce((acc, coef) => acc * x + coef, 0);
+  };
 }
 
 /**
